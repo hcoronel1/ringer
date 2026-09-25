@@ -25,6 +25,7 @@ Use this before merging a risky change, publishing a high-visibility artifact, o
 | `{{REVIEW_SCOPE}}` | Human-readable scope name for the thing under review. |
 | `{{RUN_SLUG}}` | Stable run slug for this review. |
 | `{{WORKDIR}}` | Scratch run directory outside the repo under review. |
+| `{{ADD_DIR_ARGS}}` | Only when `{{REVIEW_ENGINE}}` is `claude` and the review surface lives outside `{{WORKDIR}}`: `"engine_args": ["--add-dir", "<absolute dir containing the surface>"]`. Leave the key out entirely otherwise (empty `engine_args` is fine). |
 
 ## Checks
 
@@ -37,6 +38,8 @@ This cannot be gamed by a vague review because the validator requires concrete e
 Use `repo-feature` after synthesis when a confirmed finding needs an actual code change. Use `launch-kit` or `asset-swarm` before this when the thing under review is a launch page, media package, or public artifact produced by another swarm.
 
 ## Gotchas
+
+**`claude` engine + review surface outside `{{WORKDIR}}`: add `--add-dir` or the reviewer fails without ever reading the target.** `acceptEdits` (the default `sandbox_args` for `[engines.claude]`) auto-approves edits but not `Read` on paths outside the task's working directory. A read-only reviewer asked to inspect a file/repo elsewhere gets `Read` denied, gives up in 1-2 turns asking for permission nobody can grant (headless), and ringer records it as a quality FAIL — retrying repeats the identical denial. Set the task's `"engine_args": ["--add-dir", "<dir containing the surface>"]` whenever the surface isn't under `{{WORKDIR}}`; this only widens what the model can *read*, it does not grant write access outside the taskdir. Confirmed 2026-09-25 across 11 real runs (`permission_denials` with `tool_name: Read` on the exact `REVIEW SURFACE` path).
 
 Use the manifest `model` field for each task. Do not clone engine blocks or hide model choices in `engine_args`; the run state needs to show which model reviewed which artifact.
 
