@@ -66,7 +66,7 @@ class HudSingleTabTests(unittest.TestCase):
             original_popen = ringer.subprocess.Popen
             try:
                 ringer.hud_is_alive = lambda _port: next(alive_results)
-                ringer.open_in_browser = opened.append
+                ringer.open_in_browser = lambda url, _browser_app=None: opened.append(url)
 
                 def fake_popen(*args: object, **_kwargs: object) -> object:
                     spawned.append(args)

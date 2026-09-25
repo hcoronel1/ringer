@@ -18,6 +18,10 @@ dashboard_port_base = 8787
 # dashboard open in the browser.
 # hud_app_path = "/Applications/Ringside.app"
 
+# Optional browser app for opening Ringside on macOS. `open -g` keeps the
+# browser from stealing focus; omit this to use the system default browser.
+# browser_app = "Vivaldi"
+
 # Belt-and-suspenders full-access gate. A task with "full_access": true will
 # still fail unless this is true.
 allow_full_access = false
@@ -90,6 +94,19 @@ token_regex = "tokens\\s+used\\s*:?\\s*([0-9][0-9,]*)"
 # Ringer applies this to captured worker output after every attempt. The Codex
 # default reads the `model:` header; override it here only if that format changes.
 model_report_regex = "(?m)^model:[ \\t]*([^ \\t\\r\\n]+)[ \\t]*\\r?$"
+
+# Claude Code CLI (opt in). Claude Code permissions are not an OS filesystem
+# sandbox; use an OS-level wrapper when filesystem containment is required.
+# [engines.claude]
+# bin = "claude"
+# model_default = "claude-sonnet-5"
+# args_template = [
+#   "-p", "--model", "{model}", "--output-format", "json",
+#   "{access_args}", "{engine_args}", "{spec}",
+# ]
+# sandbox_args = ["--permission-mode", "acceptEdits"]
+# full_access_args = ["--dangerously-skip-permissions"]
+# result_parser = "claude-code-json"
 
 # Grok Build CLI (xAI). Install: curl -fsSL https://x.ai/cli/install.sh | bash
 # (or: npm install -g @xai-official/grok), then `grok login` — OAuth on a

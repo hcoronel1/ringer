@@ -391,7 +391,9 @@ class ScoreboardPageTests(unittest.TestCase):
         self.assertEqual(str(html_path.resolve()) + "\n", out.getvalue())
         self.assertTrue(html_path.exists())
         self.assertFalse(artifact_library_path(self.config.state_dir).exists())
-        open_in_browser.assert_called_once_with(ringer.file_href(html_path.resolve()))
+        open_in_browser.assert_called_once_with(
+            ringer.file_href(html_path.resolve()), self.config.browser_app
+        )
 
     def test_html_without_path_writes_live_artifact_library_entry(self) -> None:
         out = io.StringIO()
